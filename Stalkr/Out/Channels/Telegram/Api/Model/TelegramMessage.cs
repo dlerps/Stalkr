@@ -12,5 +12,8 @@ namespace Stalkr.Out.Channels.Telegram.Api.Model
 
         [JsonProperty("disable_notification")]
         public bool DisableNotification { get; set; } = false;
+
+        [JsonProperty("parse_mode")]
+        public string ParseMode => "MarkdownV2";
     }
 }

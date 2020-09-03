@@ -39,10 +39,12 @@ namespace Stalkr.Out.Channels.Telegram
             if (_timeSinceNoChangeSpam == null
                 || _timeSinceNoChangeSpam.ElapsedMilliseconds >= _channelConfiguration.NoChangeNotificationInterval)
             {
-                await SendMessage(
-                    $"Nothing changed at {_stalkrConfiguration.Title}. Checksum is still: {_checksumMemory.LastChecksum}",
-                    false
-                );
+                var minutes = _channelConfiguration.NoChangeNotificationInterval / (1000 * 60);
+                var message =
+                    $"{minutes} minute Update on *{_stalkrConfiguration.Title}*: Still no change\\. " +
+                    $"Checksum is _{_checksumMemory.LastChecksum}_";
+                
+                await SendMessage(message, false);
                 
                 _timeSinceNoChangeSpam = Stopwatch.StartNew();
             }
@@ -50,10 +52,13 @@ namespace Stalkr.Out.Channels.Telegram
         
         private async Task HandleChange()
         {
-            await SendMessage(
-                $"Something changed!! at {_stalkrConfiguration.Title}. Checksum is now: {_checksumMemory.LastChecksum}",
-                true
-            );
+            var message =
+                $"``` " +
+                $"There is an update\\! " +
+                $"``` " +
+                $"*{_stalkrConfiguration.Title}* changed to checksum: _{_checksumMemory.LastChecksum}_";
+            
+            await SendMessage(message, true);
             
             _timeSinceNoChangeSpam = Stopwatch.StartNew();
         }
