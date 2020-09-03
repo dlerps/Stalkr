@@ -11,10 +11,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.7" />
+    <PackageReference Include="Refit" Version="5.1.67" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="appsettings.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
+    <None Include="appsettings.private.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

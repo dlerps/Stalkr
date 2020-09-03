@@ -5,6 +5,7 @@ using Stalkr.Core;
 using Stalkr.In;
 using Stalkr.Out;
 using Stalkr.Out.Channels;
+using Stalkr.Out.Channels.Telegram;
 
 namespace Stalkr
 {
@@ -14,6 +15,7 @@ namespace Stalkr
         {
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", false)
+                .AddJsonFile("appsettings.private.json", true)
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -30,6 +32,7 @@ namespace Stalkr
             services.AddScoped<IStalkrService, StalkrService>();
             services.AddScoped<ISpamr, Spamr>();
             services.AddScoped<ISpamChannel, ConsoleChannel>();
+            services.AddScoped<ISpamChannel, TelegramChannel>();
 
             return services.BuildServiceProvider();
         }
