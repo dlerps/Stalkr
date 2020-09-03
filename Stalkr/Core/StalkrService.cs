@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Stalkr.In;
 using Stalkr.Out;
 
-namespace Stalkr
+namespace Stalkr.Core
 {
     public class StalkrService : IStalkrService
     {

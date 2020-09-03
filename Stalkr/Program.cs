@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Stalkr.Core;
 using Stalkr.In;
 
 namespace Stalkr

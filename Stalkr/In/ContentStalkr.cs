@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Stalkr.Core;
 
 namespace Stalkr.In
 {

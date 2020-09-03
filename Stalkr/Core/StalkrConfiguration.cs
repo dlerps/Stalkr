@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 
-namespace Stalkr
+namespace Stalkr.Core
 {
     public class StalkrConfiguration
     {

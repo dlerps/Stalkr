@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Stalkr
+namespace Stalkr.Core
 {
     public interface IStalkrService
     {

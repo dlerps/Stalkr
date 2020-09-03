@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Stalkr.Core;
 using Stalkr.In;
 using Stalkr.Out;
 using Stalkr.Out.Channels;

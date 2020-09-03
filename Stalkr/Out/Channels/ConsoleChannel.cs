@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Stalkr.Core;
 using Stalkr.In;
 
 namespace Stalkr.Out.Channels
