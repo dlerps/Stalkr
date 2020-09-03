@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Stalkr.In;
 using Stalkr.Out;
 
@@ -26,7 +27,7 @@ namespace Stalkr.Core
             _checksumMemory = checksumMemory;
         }
 
-        public async Task GoStalking()
+        public async Task GoStalking(CancellationToken cancellationToken = default)
         {
             var content = await _contentService.ReadContent();
             var checksum = _checksumService.GetSha256Digest(content);

@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Stalkr.Core
 {
     public interface IStalkrService
     {
-        Task GoStalking();
+        Task GoStalking(CancellationToken cancellationToken = default);
     }
 }

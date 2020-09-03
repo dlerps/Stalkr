@@ -1,21 +1,32 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Stalkr.Core;
-using Stalkr.In;
 
 namespace Stalkr
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     class Program
     {
+        private static CancellationToken _cancellationToken;
+        
         static async Task Main(string[] args)
         {
             var services = AppStartup.InitApplication();
 
-            using var scope = services.CreateScope();
-            var stalkr = scope.ServiceProvider.GetRequiredService<IStalkrService>();
+            var runnr = new Runnr(services);
+            await runnr.RunStalkr(_cancellationToken);
+        }
 
-            await stalkr.GoStalking();
+        private static void RegisterShutdownEvent()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            _cancellationToken = cancellationTokenSource.Token;
+
+            AppDomain.CurrentDomain.ProcessExit += (_, __) =>
+            {
+                cancellationTokenSource.Cancel();
+            };
         }
     }
 }
