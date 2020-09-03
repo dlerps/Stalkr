@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Stalkr.Core;
 using Stalkr.In;
 
@@ -9,12 +11,20 @@ namespace Stalkr.Out.Channels
     {
         private readonly IChecksumMemory _checksumMemory;
 
-        private readonly StalkrConfiguration _configuration;
+        private readonly StalkrConfiguration _stalkrConfiguration;
 
-        public ConsoleChannel(IChecksumMemory checksumMemory, StalkrConfiguration configuration)
+        private readonly ChannelConfiguration _channelConfiguration;
+
+        private Stopwatch _timeSinceNoChangeSpam;
+
+        public ConsoleChannel(
+            IChecksumMemory checksumMemory, 
+            StalkrConfiguration stalkrConfiguration,
+            IConfiguration configuration)
         {
-            _configuration = configuration;
+            _stalkrConfiguration = stalkrConfiguration;
             _checksumMemory = checksumMemory;
+            _channelConfiguration = new ChannelConfiguration(configuration.GetSection("Console"));
         }
         
         public Task Notify(bool changeHappened)
@@ -24,13 +34,19 @@ namespace Stalkr.Out.Channels
         
         private Task HandleNoChange()
         {
-            Console.WriteLine($"Nothing changed at {_configuration.Title}. Checksum is still: {_checksumMemory.LastChecksum}");
+            if (_timeSinceNoChangeSpam == null
+                || _timeSinceNoChangeSpam.ElapsedMilliseconds >= _channelConfiguration.NoChangeNotificationInterval)
+            {
+                Console.WriteLine($"Nothing changed at {_stalkrConfiguration.Title}. Checksum is still: {_checksumMemory.LastChecksum}");
+                _timeSinceNoChangeSpam = Stopwatch.StartNew();
+            }
+            
             return Task.CompletedTask;
         }
         
         private Task HandleChange()
         {
-            Console.WriteLine($"Something changed!! at {_configuration.Title}. Checksum is now: {_checksumMemory.LastChecksum}");
+            Console.WriteLine($"Something changed!! at {_stalkrConfiguration.Title}. Checksum is now: {_checksumMemory.LastChecksum}");
             return Task.CompletedTask;
         }
     }

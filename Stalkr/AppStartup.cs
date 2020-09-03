@@ -22,8 +22,8 @@ namespace Stalkr
             var services = new ServiceCollection();
 
             services.AddSingleton<IChecksumMemory, ChecksumMemory>();
+            services.AddSingleton<IConfiguration>(config);
             services.AddSingleton(stalkrConfiguration);
-            services.AddSingleton(config);
 
             services.AddScoped<IChecksumStalkr, ChecksumStalkr>();
             services.AddScoped<IContentStalkr, ContentStalkr>();
