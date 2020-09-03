@@ -7,6 +7,8 @@ namespace Stalkr
     {
         private const int DefaultInterval = 120000;
         
+        public string Title { get; set; }
+        
         public string WebsiteAddress { get; set; }
         
         public string XPathSelector { get; set; }
@@ -19,6 +21,7 @@ namespace Stalkr
             {
                 XPathSelector = configuration["XPathSelector"],
                 WebsiteAddress = configuration["WebSiteAddress"],
+                Title = configuration["Title"] ?? configuration["WebSiteAddress"],
                 Interval = ReadInterval(configuration)
             };
         }

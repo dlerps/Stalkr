@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Stalkr.In;
+using Stalkr.Out;
 
-namespace Stalkr.In
+namespace Stalkr
 {
     public class StalkrService : IStalkrService
     {
@@ -11,12 +13,16 @@ namespace Stalkr.In
 
         private readonly IChecksumMemory _checksumMemory;
 
+        private readonly ISpamr _spamr;
+
         public StalkrService(
             IChecksumStalkr checksumService, 
             IContentStalkr contentService,
-            IChecksumMemory checksumMemory)
+            IChecksumMemory checksumMemory,
+            ISpamr spamr)
         {
             _contentService = contentService;
+            _spamr = spamr;
             _checksumService = checksumService;
             _checksumMemory = checksumMemory;
         }
@@ -25,17 +31,15 @@ namespace Stalkr.In
         {
             var content = await _contentService.ReadContent();
             var checksum = _checksumService.GetSha256Digest(content);
-
-            Console.WriteLine($"Current checksum: {checksum}");
             
             if (await _checksumMemory.ContainsChecksum(checksum))
             {
-                Console.WriteLine($"Nothing new...");
+                await _spamr.NotifyChannels(false);
                 return;
             }
 
             await _checksumMemory.Memorise(checksum);
-            Console.WriteLine("There has been an update!!!");
+            await _spamr.NotifyChannels(true);
         }
     }
 }

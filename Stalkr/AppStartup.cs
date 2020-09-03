@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Stalkr.In;
+using Stalkr.Out;
+using Stalkr.Out.Channels;
 
 namespace Stalkr
 {
@@ -25,6 +27,8 @@ namespace Stalkr
             services.AddScoped<IChecksumStalkr, ChecksumStalkr>();
             services.AddScoped<IContentStalkr, ContentStalkr>();
             services.AddScoped<IStalkrService, StalkrService>();
+            services.AddScoped<ISpamr, Spamr>();
+            services.AddScoped<ISpamChannel, ConsoleChannel>();
 
             return services.BuildServiceProvider();
         }
