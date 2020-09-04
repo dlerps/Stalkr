@@ -1,0 +1,13 @@
+**/[Bb]in
+**/[Oo]bj
+.idea
+.vscode
+.vs
+**/*.md
+.git
+.gitignore
+Dockerfile
+*.DotSettings
+*.DotSettings.user
+.env
+*/appsettings.private.json

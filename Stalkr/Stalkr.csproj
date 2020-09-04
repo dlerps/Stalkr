@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <None Include="appsettings.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
-    <None Include="appsettings.private.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
+<!--    <None Include="appsettings.private.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />-->
   </ItemGroup>
 
 </Project>
