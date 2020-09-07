@@ -17,12 +17,16 @@ namespace Stalkr.In
 
         public async Task<string> ReadContent()
         {
-            var webReader = new HtmlWeb();
+            var webReader = new HtmlWeb
+            {
+                UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0"
+            };
+
             var dom = await webReader.LoadFromWebAsync(_config.WebsiteAddress, Encoding.UTF8);
             
             var contentNode = GetContentNode(dom);
 
-            return contentNode.WriteTo();
+            return _config.UseInnerHtml ? contentNode.InnerHtml : contentNode.WriteTo();
         }
 
         private HtmlNode GetContentNode(HtmlDocument dom)

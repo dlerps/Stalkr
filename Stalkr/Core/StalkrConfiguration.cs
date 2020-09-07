@@ -15,14 +15,19 @@ namespace Stalkr.Core
         
         public int Interval { get; set; }
 
+        public bool UseInnerHtml { get; set; }
+
         public static StalkrConfiguration FromConfiguration(IConfiguration configuration)
         {
+            Boolean.TryParse(configuration["UseInnerHtml"], out var useInnerHtml);
+            
             return new StalkrConfiguration()
             {
                 XPathSelector = configuration["XPathSelector"],
                 WebsiteAddress = configuration["WebSiteAddress"],
                 Title = configuration["Title"] ?? configuration["WebSiteAddress"],
-                Interval = ReadInterval(configuration)
+                Interval = ReadInterval(configuration),
+                UseInnerHtml = useInnerHtml
             };
         }
 
