@@ -26,6 +26,9 @@ namespace Stalkr.In
             
             var contentNode = GetContentNode(dom);
 
+            if (contentNode == null)
+                return String.Empty;
+
             return _config.UseInnerHtml ? contentNode.InnerHtml : contentNode.WriteTo();
         }
 
