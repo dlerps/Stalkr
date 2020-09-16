@@ -6,7 +6,7 @@ namespace Stalkr.In
 {
     public class ChecksumMemory : IChecksumMemory
     {
-        private const string _emptyChecksum = "123empty";
+        private const string EmptyChecksum = "123empty00000000001337";
         
         private readonly ISet<string> _memory;
         
@@ -20,9 +20,8 @@ namespace Stalkr.In
 
         public Task Memorise(string checksum)
         {
-            if (String.IsNullOrEmpty(checksum))
-                checksum = _emptyChecksum;
-
+            checksum = PrepareChecksum(checksum);
+            
             LastChecksum = checksum;
             _memory.Add(checksum);
 
@@ -31,8 +30,13 @@ namespace Stalkr.In
 
         public Task<bool> ContainsChecksum(string checksum)
         {
+            checksum = PrepareChecksum(checksum);
+            
             var checksumExists = _memory.Contains(checksum);
             return Task.FromResult(checksumExists);
         }
+
+        private static string PrepareChecksum(string checksum) 
+            => String.IsNullOrEmpty(checksum) ? EmptyChecksum : checksum;
     }
 }
