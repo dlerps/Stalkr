@@ -6,6 +6,8 @@ namespace Stalkr.In
 {
     public class ChecksumMemory : IChecksumMemory
     {
+        private const string _emptyChecksum = "123empty";
+        
         private readonly ISet<string> _memory;
         
         public string LastChecksum { get; private set; }
@@ -19,7 +21,7 @@ namespace Stalkr.In
         public Task Memorise(string checksum)
         {
             if (String.IsNullOrEmpty(checksum))
-                throw new ArgumentException("Not a valid checksum");
+                checksum = _emptyChecksum;
 
             LastChecksum = checksum;
             _memory.Add(checksum);
