@@ -11,20 +11,18 @@ namespace Stalkr
 {
     public static class AppStartup
     {
-        public static IServiceProvider InitApplication()
+        public static IConfiguration Configuration { get; private set; }
+        
+        public static void InitApplication(IServiceCollection services)
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", false)
-                .AddJsonFile("appsettings.private.json", true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var stalkrConfiguration = StalkrConfiguration.FromConfiguration(config);
+            LoadConfiguration();
             
-            var services = new ServiceCollection();
+            var stalkrConfiguration = StalkrConfiguration.FromConfiguration(Configuration);
 
+            services.AddHostedService<Runnr>();
+            
             services.AddSingleton<IChecksumMemory, ChecksumMemory>();
-            services.AddSingleton<IConfiguration>(config);
+            services.AddSingleton(Configuration);
             services.AddSingleton(stalkrConfiguration);
 
             services.AddScoped<IChecksumStalkr, ChecksumStalkr>();
@@ -33,8 +31,18 @@ namespace Stalkr
             services.AddScoped<ISpamr, Spamr>();
             services.AddScoped<ISpamChannel, ConsoleChannel>();
             services.AddScoped<ISpamChannel, TelegramChannel>();
+        }
 
-            return services.BuildServiceProvider();
+        public static void LoadConfiguration()
+        {
+            if (Configuration != null)
+                return;
+            
+            Configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false)
+                .AddJsonFile("appsettings.private.json", true)
+                .AddEnvironmentVariables()
+                .Build();
         }
     }
 }

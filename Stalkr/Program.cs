@@ -1,32 +1,44 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using Stalkr.Core;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Stalkr.Core.Logging;
 
 namespace Stalkr
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    class Program
+    public class Program
     {
-        private static CancellationToken _cancellationToken;
-        
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            var services = AppStartup.InitApplication();
+            Log.Logger = LoggrFactory.CreateGlobalLogger();
 
-            var runnr = new Runnr(services);
-            await runnr.RunStalkr(_cancellationToken);
+            try
+            {
+                await ConfigHost().RunAsync();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Stalkr terminated with an exception");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
-        private static void RegisterShutdownEvent()
+        private static IHost ConfigHost()
         {
-            var cancellationTokenSource = new CancellationTokenSource();
-            _cancellationToken = cancellationTokenSource.Token;
-
-            AppDomain.CurrentDomain.ProcessExit += (_, __) =>
-            {
-                cancellationTokenSource.Cancel();
-            };
+            return new HostBuilder()
+                .ConfigureServices(AppStartup.InitApplication)
+                .ConfigureLogging(log =>
+                {
+                    log.ClearProviders();
+                    log.AddConsole();
+                })
+                .UseSerilog()
+                .Build();
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Stalkr.Out.Channels;
 
 namespace Stalkr.Out
@@ -11,9 +10,12 @@ namespace Stalkr.Out
     {
         private readonly IEnumerable<ISpamChannel> _channels;
 
-        public Spamr(IServiceProvider serviceProvider)
+        private readonly ILogger<Spamr> _logger;
+
+        public Spamr(IEnumerable<ISpamChannel> channels, ILogger<Spamr> logger)
         {
-            _channels = serviceProvider.GetServices<ISpamChannel>();
+            _channels = channels;
+            _logger = logger;
         }
         
         public Task NotifyChannels(bool changeHappened)
@@ -22,6 +24,11 @@ namespace Stalkr.Out
             
             foreach (var spamChannel in _channels)
                 notificationTasks.Add(spamChannel.Notify(changeHappened));
+            
+            if (changeHappened)
+                _logger.LogInformation("Notified {ChannelCount} channels about change", _channels.Count());
+            else
+                _logger.LogInformation("Notified {ChannelCount} channels with no change", _channels.Count());
 
             return Task.WhenAll(notificationTasks);
         }

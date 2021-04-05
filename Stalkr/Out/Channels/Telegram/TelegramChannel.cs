@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Refit;
 using Stalkr.Core;
 using Stalkr.In;
@@ -19,15 +20,20 @@ namespace Stalkr.Out.Channels.Telegram
 
         private readonly TelegramConfiguration _channelConfiguration;
 
+        private readonly ILogger<TelegramChannel> _logger;
+
         private string LastChecksumShort => _checksumMemory.LastChecksum.Substring(0, 16);
         
         public TelegramChannel(
             IChecksumMemory checksumMemory, 
             StalkrConfiguration stalkrConfiguration,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<TelegramChannel> logger)
         {
             _stalkrConfiguration = stalkrConfiguration;
             _checksumMemory = checksumMemory;
+            _logger = logger;
+            
             _channelConfiguration = new TelegramConfiguration(configuration.GetSection("Telegram"));
         }
         
@@ -66,7 +72,7 @@ namespace Stalkr.Out.Channels.Telegram
             _timeSinceNoChangeSpam = Stopwatch.StartNew();
         }
 
-        private Task SendMessage(string messageText, bool notify)
+        private async Task SendMessage(string messageText, bool notify)
         {
             var telegramApi = RestService.For<ITelegramApi>(_channelConfiguration.BaseAddress);
             var message = new TelegramMessage()
@@ -76,7 +82,9 @@ namespace Stalkr.Out.Channels.Telegram
                 DisableNotification = !notify
             };
 
-            return telegramApi.SendMessage(_channelConfiguration.BotToken, message);
+            await telegramApi.SendMessage(_channelConfiguration.BotToken, message);
+            
+            _logger.LogInformation("Sent message to chat {TelegramChatId}", _channelConfiguration.ChatId);
         }
     }
 }
